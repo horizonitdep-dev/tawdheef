@@ -560,7 +560,7 @@ canvas#confetti{position:fixed;inset:0;z-index:30;pointer-events:none;width:100%
   }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const isRateLimit = (r, j) => r.status === 429 || /rate.?limit|too many/i.test((j && j.message) || "");
+  const isRateLimit = (r, j) => r.status === 429 || r.status >= 500 || /rate.?limit|too many|server error|try again later|unavailable|timeout/i.test((j && j.message) || "");
 
   async function sendEmail() {
     const note = data.file ? `${data.file.name} (attached to a separate email "CV: ${data.name.trim()}")` : "Not provided";

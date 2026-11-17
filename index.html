@@ -528,8 +528,11 @@ canvas#confetti{position:fixed;inset:0;z-index:30;pointer-events:none;width:100%
   const toB64 = (f) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = rej; r.readAsDataURL(f); });
   function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), msg.length > 60 ? 12000 : 4200); }
 
-  // Email delivery via FormSubmit (CV arrives as an attachment).
-  function fields() {
+  // Email delivery via FormSubmit.
+  //  1) Details go through FormSubmit's AJAX endpoint (JSON reply = certain success/failure).
+  //  2) The CV goes as a classic multipart form post (the only FormSubmit route that
+  //     keeps attachments), arriving as a second email titled "CV: <name>".
+  function fields(cvNote) {
     const first = data.name.trim();
     return [
       ["_subject", `New registration: ${first}${C.EVENT_NAME ? " · " + C.EVENT_NAME : ""}`],
@@ -539,62 +542,76 @@ canvas#confetti{position:fixed;inset:0;z-index:30;pointer-events:none;width:100%
       ["Currently working", data.working === "Yes" ? "Yes" : "No"],
       ["Area of interest", data.industry || "Not provided"],
       ["Phone", data.phone ? `${data.cc} ${data.phone}`.trim() : "Not provided"],
-      ["CV", data.file ? data.file.name + " (attached)" : "Not provided"],
+      ["CV", cvNote],
       ["Source", KIOSK ? "Filled on iPad" : "Scanned QR"],
       ...(C.EVENT_NAME ? [["Event", C.EVENT_NAME]] : []),
       ["Submitted", new Date().toLocaleString("en-GB", { timeZone: "Asia/Dubai" }) + " (Dubai)"],
     ];
   }
+  function cvFields() {
+    const first = data.name.trim();
+    return [
+      ["_subject", `CV: ${first} (${data.email})`],
+      ["_template", "table"], ["_captcha", "false"], ["_honey", $("website").value],
+      ["Full name", first], ["email", data.email],
+      ["Area of interest", data.industry || "Not provided"],
+      ["CV file", data.file.name],
+    ];
+  }
 
-  // 1st choice: FormSubmit's AJAX endpoint. It answers with JSON, so we know
-  // for certain whether it was accepted, and get its exact reason if not.
   async function sendEmail() {
     const fd = new FormData();
-    fields().forEach(([k, v]) => fd.append(k, v));
-    if (data.file) fd.append("attachment", data.file, data.file.name);
-    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 90000);
+    fields(data.file ? `${data.file.name} (attached to a separate email "CV: ${data.name.trim()}")` : "Not provided").forEach(([k, v]) => fd.append(k, v));
+    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 60000);
     let r;
     try {
       r = await fetch("https://formsubmit.co/ajax/" + EMAIL, { method: "POST", body: fd, headers: { Accept: "application/json" }, signal: ctrl.signal });
     } catch (e) {
       clearTimeout(to);
       if (navigator.onLine === false) throw e;
-      return sendEmailIframe();            // network/CORS hiccup: fall back to a classic form post
+      // AJAX unreachable: send everything (incl. CV) as one classic post instead
+      return postForm(fields(data.file ? data.file.name + " (attached)" : "Not provided"), true, true);
     }
     clearTimeout(to);
     const j = await r.json().catch(() => ({}));
-    if (String(j.success) === "true") return;
-    const err = new Error(j.message || `FormSubmit HTTP ${r.status}`);
-    err.userMsg = j.message || "";
-    throw err;
+    if (String(j.success) !== "true") { const err = new Error(j.message || `FormSubmit HTTP ${r.status}`); err.userMsg = j.message || ""; throw err; }
+    if (data.file) await postForm(cvFields(), true, false);   // wait until the upload has finished
   }
 
-  // Fallback: classic multipart post into a hidden iframe; FormSubmit redirects to thanks.html.
-  function sendEmailIframe() {
+  // Classic multipart post into a hidden iframe (supports attachments).
+  // strict=true: only resolve when FormSubmit redirects to our thanks page.
+  // strict=false: resolve as soon as the server has answered (upload complete).
+  function postForm(list, withFile, strict) {
     return new Promise((resolve, reject) => {
-      const id = "fs" + Date.now();
+      const id = "fs" + Date.now() + Math.random().toString(36).slice(2, 6);
       const ifr = document.createElement("iframe"); ifr.name = id; ifr.style.display = "none"; document.body.appendChild(ifr);
       const f = document.createElement("form");
       f.method = "POST"; f.enctype = "multipart/form-data"; f.target = id; f.style.display = "none";
       f.action = "https://formsubmit.co/" + EMAIL;
       const add = (n, v) => { const i = document.createElement("input"); i.type = "hidden"; i.name = n; i.value = v; f.appendChild(i); };
-      fields().forEach(([k, v]) => add(k, v));
+      list.forEach(([k, v]) => add(k, v));
       add("_next", new URL("thanks.html", location.href).href);
-      if (data.file) {
+      let moved = null;
+      if (withFile && data.file) {
         let fi = document.createElement("input"); fi.type = "file"; fi.name = "attachment";
         try { const dt = new DataTransfer(); dt.items.add(data.file); fi.files = dt.files; } catch (e) {}
-        if (!fi.files || !fi.files.length) { fi = $("file"); fi.name = "attachment"; }
+        if (!fi.files || !fi.files.length) { fi = $("file"); moved = { el: fi, parent: fi.parentNode, next: fi.nextSibling, name: fi.name }; fi.name = "attachment"; }
         f.appendChild(fi);
       }
       document.body.appendChild(f);
       let done = false;
-      const finish = (ok, why) => { if (done) return; done = true; clearTimeout(t); setTimeout(() => { ifr.remove(); f.remove(); }, 1000); ok ? resolve() : reject(new Error(why)); };
-      const t = setTimeout(() => finish(false, "timeout"), 90000);
+      const finish = (ok, why) => {
+        if (done) return; done = true; clearTimeout(t);
+        if (moved) { moved.el.name = moved.name; moved.parent.insertBefore(moved.el, moved.next); }
+        setTimeout(() => { ifr.remove(); f.remove(); }, 1500);
+        ok ? resolve() : reject(new Error(why));
+      };
+      const t = setTimeout(() => finish(!strict, "timeout"), 90000);
       ifr.addEventListener("load", () => {
         let href = "";
-        try { href = ifr.contentWindow.location.href; } catch (e) { return finish(false, "FormSubmit did not confirm (check the activation email)"); }
+        try { href = ifr.contentWindow.location.href; } catch (e) { return finish(!strict, "FormSubmit did not confirm"); }
         if (href === "about:blank") return;
-        finish(/\/thanks(\.html)?(\?|#|$)/.test(href), "unexpected-page");
+        finish(strict ? /\/thanks(\.html)?(\?|#|$)/.test(href) : true, "unexpected-page");
       });
       f.submit();
     });

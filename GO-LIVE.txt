@@ -1,0 +1,48 @@
+GO LIVE ON VERCEL (~3 MINUTES)
+===============================
+
+No backend / Railway needed. This is a static site. Registrations are emailed
+to zainfarrukh01@gmail.com with the CV attached (via FormSubmit).
+
+1) DEPLOY TO VERCEL. Pick one:
+
+   A. Vercel CLI (fastest)
+        npm i -g vercel
+        cd hirs-event
+        vercel --prod
+      Log in when asked, accept the defaults
+      (Framework: Other · Build command: none · Output directory: ./).
+      It prints your live URL, e.g. https://hirs-event.vercel.app
+
+   B. GitHub
+      Push the hirs-event folder to a new repo → vercel.com/new → Import →
+      Framework Preset "Other" → Deploy.
+
+   Optional custom domain: Vercel → Project → Settings → Domains
+   (e.g. join.hiresgulf.com → add the CNAME it shows to your DNS).
+
+2) ACTIVATE EMAIL DELIVERY (one time only)
+   - On your phone open https://<your-url>/ and submit the form.
+     The FIRST time it says "Couldn't send": that's expected.
+   - In zainfarrukh01@gmail.com (check Spam) open the FormSubmit email →
+     click "ACTIVATE FORM".
+   - Submit again → "You're in!" and the registration email arrives.
+
+3) iPAD
+   - Safari → https://<your-url>/kiosk → Share → Add to Home Screen →
+     open it from the icon (full screen).
+   - Settings → Display & Brightness → Auto-Lock → Never.
+   - Optional: Settings → Accessibility → Guided Access → On, then triple-click
+     the top button inside the kiosk to lock the iPad to it.
+
+URLS
+   Form (what the QR opens):  https://<your-url>/
+   iPad kiosk screen:          https://<your-url>/kiosk
+
+STAFF TIPS
+   - Hold the white footer bar for 2 s: Reload / Full screen / status.
+   - Gmail filter: from:formsubmit.co → label "Event registrations".
+   - To hide your Gmail from the page source: after activating, FormSubmit
+     emails you a random string. Put it in EMAIL_TO in config.js, then run
+     `vercel --prod` again.
+   - To change the event name or address: edit config.js and redeploy.

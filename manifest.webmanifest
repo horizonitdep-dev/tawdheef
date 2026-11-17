@@ -1,0 +1,10 @@
+{
+  "name": "HIRS × HiresGulf × Tawdeef — Event Kiosk",
+  "short_name": "HIRS Kiosk",
+  "start_url": "kiosk.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#FFFAF5",
+  "theme_color": "#FFFAF5",
+  "icons": [{ "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}

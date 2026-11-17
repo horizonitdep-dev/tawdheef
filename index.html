@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F3">
+<title>Join our Talent Network · HIRS × HiresGulf × Tawdheef</title>
+<link rel="stylesheet" href="assets/fonts/poppins.css">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<script src="config.js"></script>
+<script src="assets/brand.js"></script>
+<style>
+:root{
+  --o:#FC7224; --o2:#FD9438; --o3:#FEB46B; --tint:#FDDBC0; --cream:#FFF9F3;
+  --b1:#4C1F02; --b2:#351601; --b3:#200C01; --ink:#232429;
+  --muted:#8a7565; --line:#efdccb; --ok:#1f9d55; --err:#d93a1c;
+  --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:linear-gradient(180deg,#FFFDFB,#FFF8F1);color:var(--ink);
+  font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overscroll-behavior:none}
+body{overflow:hidden}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,select{font:inherit;color:inherit}
+
+/* background */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:float 14s ease-in-out infinite}
+.bg i:nth-child(1){width:60vmax;height:60vmax;background:radial-gradient(circle,#FEB46B,transparent 65%);top:-30vmax;right:-25vmax}
+.bg i:nth-child(2){width:45vmax;height:45vmax;background:radial-gradient(circle,#FDDBC0,transparent 65%);bottom:-22vmax;left:-20vmax;animation-delay:-5s}
+.bg i:nth-child(3){width:20vmax;height:20vmax;background:radial-gradient(circle,#FC722455,transparent 70%);top:40%;left:60%;animation-delay:-9s;animation-duration:18s}
+@keyframes float{50%{transform:translate(3vmax,4vmax) scale(1.08)}}
+
+.app{position:relative;z-index:1;height:100dvh;display:grid;grid-template-rows:auto 1fr auto;
+  max-width:560px;margin:0 auto;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+
+/* header */
+header{padding:16px 22px 6px}
+.logos{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;min-height:30px}
+.logos img{height:26px;width:auto;object-fit:contain}
+.logos .l-hirs{height:32px}.logos .l-hg{height:17px}.logos .l-tw{height:30px}
+.logos .x{width:1px;height:22px;background:#dccbbd}
+.wm{font-weight:700;font-size:14px;letter-spacing:.01em;color:#2B2B2B}
+.wm-hirs{color:var(--o)}
+.wm-tw{color:#D9861F}
+.progress{margin-top:14px;display:flex;align-items:center;gap:12px;opacity:0;transition:opacity .4s}
+.progress.on{opacity:1}
+.bar{flex:1;height:6px;border-radius:9px;background:#f3e3d4;overflow:hidden}
+.bar b{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--o),var(--o3));transition:width .6s var(--ease)}
+.count{font-size:12px;font-weight:700;color:var(--muted);min-width:36px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* steps */
+main{position:relative;overflow:hidden}
+.step{position:absolute;inset:0;padding:18px 24px 12px;display:flex;flex-direction:column;justify-content:center;
+  overflow-y:auto;opacity:0;pointer-events:none;transform:translateX(40px);transition:opacity .45s var(--ease),transform .55s var(--ease)}
+.step.on{opacity:1;pointer-events:auto;transform:none}
+.step.left{transform:translateX(-40px)}
+.step > *{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.step.on > *{opacity:1;transform:none}
+.step.on > *:nth-child(2){transition-delay:.06s}.step.on > *:nth-child(3){transition-delay:.12s}
+.step.on > *:nth-child(4){transition-delay:.18s}.step.on > *:nth-child(5){transition-delay:.24s}
+
+.kicker{font-size:12.5px;font-weight:600;color:var(--o);letter-spacing:.18em;text-transform:uppercase;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.kicker .opt{background:var(--tint);color:var(--b1);padding:3px 9px;border-radius:99px;font-size:11px;letter-spacing:.04em}
+h1{font-size:clamp(28px,8vw,40px);line-height:1.15;margin:0 0 12px;letter-spacing:-.01em;color:#2B2B2B;font-weight:700}
+h1 em{font-style:normal;color:var(--o)}
+h2{font-size:clamp(23px,6.6vw,30px);line-height:1.25;margin:0 0 8px;color:#2B2B2B;font-weight:600}
+.sub{color:var(--muted);font-size:16px;line-height:1.5;margin:0 0 22px}
+
+.meta{margin:0;font-size:14px;color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--b1)}
+.sites{display:flex;align-items:center;gap:14px;margin:22px 0 0;font-size:13px;font-weight:500;color:#2B2B2B}
+.sites i{width:1px;height:18px;background:#d6c7ba}
+.chip svg{width:15px;height:15px;color:var(--o)}
+
+/* inputs */
+.field{position:relative;margin-top:6px}
+.field input{width:100%;font-size:22px;font-weight:600;padding:16px 4px 12px;border:0;border-bottom:2.5px solid var(--line);
+  background:transparent;outline:none;transition:border-color .3s;border-radius:0}
+.field input::placeholder{color:#cdb8a6;font-weight:500}
+.field::after{content:"";position:absolute;left:0;bottom:0;height:2.5px;width:100%;background:linear-gradient(90deg,var(--o),var(--o3));
+  transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.field:focus-within::after{transform:scaleX(1)}
+.field.bad::after{background:var(--err);transform:scaleX(1)}
+.hint{min-height:22px;margin-top:10px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .2s}
+.hint.err{color:var(--err)}
+.hint.ok{color:var(--ok)}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+.phone{display:flex;gap:10px;align-items:flex-end}
+.cc{position:relative;flex:0 0 auto}
+.cc select{appearance:none;-webkit-appearance:none;font-size:20px;font-weight:700;padding:16px 28px 12px 12px;border:0;border-bottom:2.5px solid var(--line);
+  background:transparent;outline:none;border-radius:0;color:var(--b1)}
+.cc::after{content:"";position:absolute;right:8px;top:50%;width:8px;height:8px;border-right:2px solid var(--o);border-bottom:2px solid var(--o);transform:translateY(-30%) rotate(45deg)}
+.phone .field{flex:1}
+
+/* industry select */
+.select{position:relative;margin-top:6px}
+.select select{appearance:none;-webkit-appearance:none;width:100%;font-size:19px;font-weight:600;padding:18px 48px 18px 18px;border-radius:18px;
+  border:1.5px solid var(--line);background:#fff;color:#2B2B2B;outline:none;transition:border-color .25s}
+.select select:focus{border-color:var(--o)}
+.select select:invalid,.select select.empty{color:#b9a594;font-weight:500}
+.select::after{content:"";position:absolute;right:22px;top:50%;width:10px;height:10px;border-right:2px solid var(--o);border-bottom:2px solid var(--o);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+
+/* choice cards */
+.choices{display:grid;gap:14px;margin-top:4px}
+.choice{display:flex;align-items:center;gap:16px;text-align:left;padding:20px;border-radius:20px;background:#fff;border:1.5px solid var(--line);
+  transition:transform .35s var(--spring),border-color .25s,box-shadow .3s,background .3s;position:relative;overflow:hidden}
+.choice:active{transform:scale(.97)}
+.choice .ic{flex:0 0 54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--cream);transition:background .3s,color .3s;color:var(--o)}
+.choice .ic svg{width:28px;height:28px}
+.choice b{display:block;font-size:18px;color:var(--b3)}
+.choice small{display:block;font-size:14px;color:var(--muted);margin-top:3px}
+.choice .tick{margin-left:auto;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;transition:all .3s var(--spring);flex:0 0 28px}
+.choice .tick svg{width:16px;height:16px;color:#fff;transform:scale(0);transition:transform .35s var(--spring)}
+.choice.sel{border-color:var(--o);background:#fff}
+.choice.sel .ic{background:var(--o);color:#fff}
+.choice.sel .tick{background:var(--o);border-color:var(--o)}
+.choice.sel .tick svg{transform:scale(1)}
+
+/* dropzone */
+.drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;
+  padding:34px 20px;border-radius:24px;border:1.5px dashed #e9cdb4;background:#fff;transition:all .3s var(--ease);cursor:pointer}
+.drop:hover,.drop.over{border-color:var(--o);background:#fff7f0;transform:scale(1.01)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .up{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#FFF1E6;color:var(--o);}
+.drop .up svg{width:30px;height:30px}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.drop b{font-size:17px;color:var(--b3)}
+.drop small{color:var(--muted);font-size:13px}
+.file{display:none;align-items:center;gap:14px;padding:16px;border-radius:20px;background:#fff;border:1.5px solid var(--o);animation:pop .5s var(--spring)}
+.file.on{display:flex}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+.file .doc{flex:0 0 46px;height:54px;border-radius:10px;background:var(--o);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;position:relative}
+.file .doc::before{content:"";position:absolute;top:0;right:0;border-style:solid;border-width:0 12px 12px 0;border-color:transparent var(--cream) #fdb07a transparent}
+.file .meta{min-width:0;flex:1}
+.file .meta b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--b3)}
+.file .meta small{color:var(--muted);font-size:13px}
+.file .rm{width:36px;height:36px;border-radius:50%;background:var(--cream);display:grid;place-items:center;color:var(--b1)}
+.file .rm svg{width:16px;height:16px}
+
+/* review */
+.review{background:#fff;border-radius:22px;border:1px solid var(--line);overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;padding:14px 14px;border-bottom:1px solid #f6ebe1}
+.row:last-child{border-bottom:0}
+.row span{flex:0 0 70px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.row b{flex:1;min-width:0;font-size:15px;font-weight:600;color:var(--b3);overflow-wrap:anywhere}
+.row b.none{color:#c4ab97;font-weight:500}
+.row button{font-size:13px;font-weight:600;color:var(--o);padding:6px 4px;border-radius:8px}
+.row button:active{background:var(--cream)}
+.consent{font-size:12.5px;color:var(--muted);line-height:1.5;margin:14px 2px 0}
+
+/* footer */
+footer{padding:12px 22px 18px;display:flex;gap:10px;align-items:center}
+.btn{flex:1;height:58px;border-radius:18px;font-size:17px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  transition:transform .3s var(--spring),opacity .3s,background .3s,box-shadow .3s;position:relative;overflow:hidden}
+.btn:active{transform:scale(.96)}
+.btn svg{width:20px;height:20px;transition:transform .3s var(--ease)}
+.btn.primary{background:var(--o);color:#fff}
+.btn.primary:hover svg{transform:translateX(4px)}
+.btn.primary[disabled]{opacity:.45;box-shadow:none;cursor:not-allowed}
+.btn.back{flex:0 0 58px;background:#fff;border:1px solid var(--line);color:var(--b1)}
+.btn.ghost{flex:0 0 auto;padding:0 18px;background:transparent;color:var(--muted);font-size:15px}
+.btn.hide{display:none}
+.btn .shine{position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#ffffff55 50%,transparent 70%);transform:translateX(-100%);animation:shine 3.2s ease-in-out infinite}
+@keyframes shine{60%,100%{transform:translateX(100%)}}
+.btn .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#ffffff33;transition:width .4s linear}
+.ripple{position:absolute;border-radius:50%;background:#fff6;transform:scale(0);animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+.spin{width:22px;height:22px;border:3px solid #fff6;border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* success */
+.done{align-items:center;text-align:center}
+.check{width:120px;height:120px;margin:0 auto 22px;position:relative}
+.check svg{width:100%;height:100%}
+.check circle{stroke-dasharray:340;stroke-dashoffset:340}
+.check path{stroke-dasharray:80;stroke-dashoffset:80}
+.step.on .check circle{animation:draw .8s .15s var(--ease) forwards}
+.step.on .check path{animation:draw .5s .8s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+@keyframes glow{50%{transform:scale(1.15);opacity:.6}}
+.ring{margin-top:24px;display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:600}
+.ring[hidden]{display:none}
+.ring svg{width:30px;height:30px;transform:rotate(-90deg)}
+.ring circle{transition:stroke-dashoffset 1s linear}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:20;
+  background:var(--b3);color:#fff;padding:13px 18px;border-radius:14px;font-size:14px;font-weight:600;max-width:90vw;
+  transition:all .4s var(--spring);box-shadow:0 18px 40px -16px #000}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+canvas#confetti{position:fixed;inset:0;z-index:30;pointer-events:none;width:100%;height:100%}
+.hp{position:absolute;left:-9999px;opacity:0}
+.demo{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:8px;z-index:40;font-size:10px;font-weight:700;letter-spacing:.08em;
+  padding:4px 8px;border-radius:6px;background:var(--b3);color:var(--o3)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="logos">
+      <img class="l-hirs" src="assets/logo-hirs.png" alt="HIRS" data-wm="hirs" onerror="logoFallback(this)">
+      <span class="x"></span>
+      <img class="l-hg" src="assets/logo-hiresgulf.png" alt="HiresGulf" data-wm="hg" onerror="logoFallback(this)">
+      <span class="x"></span>
+      <img class="l-tw" src="assets/logo-tawdeef.png" alt="Zaheb × Tawdheef" data-wm="tw" onerror="logoFallback(this)">
+    </div>
+    <div class="progress" id="progress"><div class="bar"><b id="barFill"></b></div><div class="count" id="count">1/5</div></div>
+  </header>
+
+  <main id="steps">
+    <!-- 0 welcome -->
+    <section class="step on" data-step="welcome">
+      <p class="kicker">Talent Network</p>
+      <h1>Your next role<br>starts with a <em>scan.</em></h1>
+      <p class="sub">Share a few details and our recruiters across HIRS, HiresGulf &amp; Tawdheef will match you with opportunities in the Gulf.</p>
+      <p class="meta">Takes under a minute · CV optional</p>
+      <p class="sites"><span>www.horizonirs.ae</span><i></i><span>www.hiresgulf.com</span></p>
+    </section>
+
+    <!-- 1 name -->
+    <section class="step" data-step="name">
+      <p class="kicker">Step 1</p>
+      <h2>What's your full name?</h2>
+      <p class="sub">As it appears on your passport or CV.</p>
+      <div class="field"><input id="name" type="text" autocomplete="name" autocapitalize="words" placeholder="e.g. Ahmed Khan" maxlength="80" enterkeyhint="next"></div>
+      <div class="hint" id="nameHint"></div>
+    </section>
+
+    <!-- 2 email -->
+    <section class="step" data-step="email">
+      <p class="kicker">Step 2</p>
+      <h2 id="emailTitle">Where can we reach you?</h2>
+      <p class="sub">We'll only use this to contact you about roles.</p>
+      <div class="field"><input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" maxlength="120" enterkeyhint="next"></div>
+      <div class="hint" id="emailHint"></div>
+    </section>
+
+    <!-- 3 working -->
+    <section class="step" data-step="working">
+      <p class="kicker">Step 3</p>
+      <h2>Are you currently working?</h2>
+      <p class="sub">No wrong answer, it just helps us match you faster.</p>
+      <div class="choices" id="choices">
+        <button class="choice" data-val="Yes" type="button">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span>
+          <span><b>Yes, I'm employed</b><small>Open to better opportunities</small></span>
+          <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+        <button class="choice" data-val="No" type="button">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
+          <span><b>No, not right now</b><small>Available to start soon</small></span>
+          <span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 4 industry -->
+    <section class="step" data-step="industry">
+      <p class="kicker">Step 4</p>
+      <h2>Which area interests you?</h2>
+      <p class="sub">Pick the industry you'd most like to work in.</p>
+      <div class="select">
+        <select id="industry" aria-label="Area of interest">
+          <option value="" disabled selected>Select an industry</option>
+          <option value="Oil, Gas & Energy">Oil, Gas & Energy</option>
+          <option value="Construction & Engineering">Construction & Engineering</option>
+          <option value="Facilities Management & Maintenance">Facilities Management & Maintenance</option>
+          <option value="Hospitality & Tourism">Hospitality & Tourism</option>
+          <option value="Healthcare & Medical">Healthcare & Medical</option>
+          <option value="Information Technology">Information Technology</option>
+          <option value="Banking, Finance & Accounting">Banking, Finance & Accounting</option>
+          <option value="Logistics, Transport & Supply Chain">Logistics, Transport & Supply Chain</option>
+          <option value="Retail & Sales">Retail & Sales</option>
+          <option value="Manufacturing & Production">Manufacturing & Production</option>
+          <option value="Real Estate & Property">Real Estate & Property</option>
+          <option value="Education & Training">Education & Training</option>
+          <option value="Government & Public Sector">Government & Public Sector</option>
+          <option value="Aviation">Aviation</option>
+          <option value="Security Services">Security Services</option>
+          <option value="HR & Administration">HR & Administration</option>
+          <option value="Marketing, Media & Communications">Marketing, Media & Communications</option>
+          <option value="Customer Service">Customer Service</option>
+          <option value="Legal">Legal</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field" id="otherWrap" style="display:none;margin-top:14px"><input id="industryOther" type="text" placeholder="Type your area of interest" maxlength="60" enterkeyhint="next"></div>
+      <div class="hint" id="industryHint"></div>
+    </section>
+
+    <!-- 5 phone -->
+    <section class="step" data-step="phone">
+      <p class="kicker">Step 5 <span class="opt">Optional</span></p>
+      <h2>Best number to call?</h2>
+      <p class="sub">WhatsApp works too. Skip if you'd rather not.</p>
+      <div class="phone">
+        <div class="cc"><select id="cc" aria-label="Country code">
+          <option value="+971">🇦🇪 +971</option><option value="+966">🇸🇦 +966</option><option value="+974">🇶🇦 +974</option>
+          <option value="+965">🇰🇼 +965</option><option value="+973">🇧🇭 +973</option><option value="+968">🇴🇲 +968</option>
+          <option value="+92">🇵🇰 +92</option><option value="+91">🇮🇳 +91</option><option value="+63">🇵🇭 +63</option>
+          <option value="+20">🇪🇬 +20</option><option value="+880">🇧🇩 +880</option><option value="+977">🇳🇵 +977</option>
+          <option value="+94">🇱🇰 +94</option><option value="+254">🇰🇪 +254</option><option value="+44">🇬🇧 +44</option>
+          <option value="+1">🇺🇸 +1</option><option value="">Other</option>
+        </select></div>
+        <div class="field"><input id="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" maxlength="20" enterkeyhint="next"></div>
+      </div>
+      <div class="hint" id="phoneHint"></div>
+    </section>
+
+    <!-- 6 resume -->
+    <section class="step" data-step="resume">
+      <p class="kicker">Step 6 <span class="opt">Optional</span></p>
+      <h2>Got a CV handy?</h2>
+      <p class="sub">Upload it and you'll jump the queue.</p>
+      <label class="drop" id="drop">
+        <input id="file" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*">
+        <span class="up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg></span>
+        <b>Tap to upload your CV</b>
+        <small id="dropSmall">PDF, Word or photo · up to 8 MB</small>
+      </label>
+      <div class="file" id="fileCard">
+        <div class="doc" id="fileExt">PDF</div>
+        <div class="meta"><b id="fileName">resume.pdf</b><small id="fileSize">0 KB · ready</small></div>
+        <button class="rm" id="fileRm" type="button" aria-label="Remove file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="hint" id="fileHint"></div>
+    </section>
+
+    <!-- 6 review -->
+    <section class="step" data-step="review">
+      <p class="kicker">Almost done</p>
+      <h2>Looks good?</h2>
+      <div class="review" id="review"></div>
+      <p class="consent">By submitting, you agree that HIRS, HiresGulf and Tawdheef may store your details and contact you about job opportunities.</p>
+      <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    </section>
+
+    <!-- 7 done -->
+    <section class="step done" data-step="done">
+      <div class="check"><svg viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="54" stroke="#FC7224" stroke-width="7" stroke-linecap="round"/><path d="M38 62l15 15 30-32" stroke="#FC7224" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h1 id="doneTitle">You're in!</h1>
+      <p class="sub" id="doneSub">Our recruitment team will be in touch soon.</p>
+      <div class="ring" id="ring" hidden><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#f3e3d4" stroke-width="4"/><circle id="ringC" cx="18" cy="18" r="15" fill="none" stroke="#FC7224" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.25" stroke-dashoffset="0"/></svg><span id="ringT">Restarting in 8s</span></div>
+    </section>
+  </main>
+
+  <footer id="footer">
+    <button class="btn back hide" id="back" type="button" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="btn ghost hide" id="skip" type="button">Skip</button>
+    <button class="btn primary" id="next" type="button"><span class="fill" id="btnFill"></span><span id="nextLabel">Get started</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const C = window.EVENT_CONFIG || {};
+  const KIOSK = location.hash === "#kiosk";
+  const EMAIL = (C.EMAIL_TO || "").trim();
+  const DEMO = !C.ENDPOINT && !EMAIL;
+  const MAX = (C.MAX_FILE_MB || 8) * 1024 * 1024;
+  const $ = (id) => document.getElementById(id);
+  const steps = [...document.querySelectorAll(".step")];
+  const order = steps.map((s) => s.dataset.step);
+  const data = { name: "", email: "", working: "", industry: "", cc: "+971", phone: "", file: null };
+  let cur = 0, busy = false;
+
+  if (DEMO) { const d = document.createElement("div"); d.className = "demo"; d.textContent = "DEMO MODE"; document.body.appendChild(d); }
+  $("dropSmall").textContent = `PDF, Word or photo · up to ${C.MAX_FILE_MB || 8} MB`;
+
+  const first = () => (data.name.trim().split(/\s+/)[0] || "");
+  const haptic = (ms = 12) => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+  // ── navigation ──
+  function go(i, dir) {
+    if (i === cur || i < 0 || i >= steps.length) return;
+    dir = dir || (i > cur ? 1 : -1);
+    const from = steps[cur], to = steps[i];
+    from.classList.remove("on"); from.classList.toggle("left", dir > 0);
+    to.classList.remove("left"); to.style.transition = "none";
+    to.style.transform = `translateX(${dir > 0 ? 40 : -40}px)`;
+    to.offsetWidth; to.style.transition = ""; to.style.transform = "";
+    to.classList.add("on");
+    cur = i;
+    onEnter();
+  }
+  const name = () => order[cur];
+
+  function onEnter() {
+    const s = name();
+    const total = 6, idx = ["name", "email", "working", "industry", "phone", "resume"].indexOf(s);
+    $("progress").classList.toggle("on", s !== "welcome" && s !== "done");
+    const pct = s === "review" ? 100 : idx >= 0 ? (idx / total) * 100 + 4 : 0;
+    $("barFill").style.width = pct + "%";
+    $("count").textContent = s === "review" ? "✓" : idx >= 0 ? `${idx + 1}/${total}` : "";
+    $("back").classList.toggle("hide", s === "welcome" || s === "done");
+    $("skip").classList.toggle("hide", !(s === "phone" || s === "resume"));
+    $("footer").style.display = s === "done" ? "none" : "";
+    const labels = { welcome: "Get started", review: "Submit", resume: data.file ? "Continue" : "Continue" };
+    $("nextLabel").textContent = labels[s] || "Continue";
+    if (s === "email") $("emailTitle").textContent = first() ? `Nice to meet you, ${first()}! Your email?` : "Where can we reach you?";
+    if (s === "review") renderReview();
+    if (s === "working") $("next").classList.add("hide"); else $("next").classList.remove("hide");
+    validate(false);
+    const inp = { name: "name", email: "email", phone: "phone" }[s] || (s === "industry" && data.industry && $("industry").value === "Other" ? "industryOther" : "");
+    if (inp) setTimeout(() => $(inp).focus({ preventScroll: true }), 380);
+    else if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+
+  // ── validation ──
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  function setHint(id, msg, cls) { const h = $(id); h.textContent = msg || ""; h.className = "hint" + (cls ? " " + cls : ""); }
+  function validate(show) {
+    const s = name(); let ok = true;
+    if (s === "name") {
+      data.name = $("name").value.replace(/\s+/g, " ");
+      ok = data.name.trim().length >= 2 && /\p{L}/u.test(data.name);
+      if (show && !ok) setHint("nameHint", "Please enter your name", "err");
+      else setHint("nameHint", ok && data.name.trim().split(" ").length < 2 ? "Tip: add your surname too" : ok ? "Perfect 👌" : "", ok ? "ok" : "");
+    }
+    if (s === "email") {
+      data.email = $("email").value.trim();
+      ok = emailRe.test(data.email);
+      const typo = suggestEmail(data.email);
+      if (show && !ok) setHint("emailHint", "That email doesn't look quite right", "err");
+      else if (ok && typo) { $("emailHint").innerHTML = `Did you mean <b style="color:var(--o);cursor:pointer;text-decoration:underline" id="fix">${typo}</b>?`; $("emailHint").className = "hint"; $("fix").onclick = () => { $("email").value = typo; validate(false); }; }
+      else setHint("emailHint", ok ? "Looks good ✓" : "", ok ? "ok" : "");
+    }
+    if (s === "working") ok = !!data.working;
+    if (s === "industry") {
+      const v = $("industry").value, other = $("industryOther").value.trim();
+      $("industry").classList.toggle("empty", !v);
+      $("otherWrap").style.display = v === "Other" ? "" : "none";
+      data.industry = v === "Other" ? (other ? "Other: " + other : "") : v;
+      ok = !!data.industry;
+      if (show && !ok) setHint("industryHint", v === "Other" ? "Please type your area of interest" : "Please pick one", "err");
+      else setHint("industryHint", ok ? "Great choice ✓" : "", ok ? "ok" : "");
+    }
+    if (s === "phone") {
+      data.cc = $("cc").value; data.phone = $("phone").value.replace(/[^\d+\s-]/g, "");
+      const digits = data.phone.replace(/\D/g, "");
+      ok = !digits || (digits.length >= 6 && digits.length <= 15);
+      if (show && !ok) setHint("phoneHint", "Check the number, or tap Skip", "err"); else setHint("phoneHint", digits && ok ? "Got it ✓" : "", "ok");
+    }
+    if (s !== "welcome" && s !== "review") $("next").disabled = !ok;
+    else $("next").disabled = false;
+    return ok;
+  }
+  function suggestEmail(e) {
+    const m = e.match(/@(.+)$/); if (!m) return "";
+    const fixes = { "gmial.com": "gmail.com", "gmai.com": "gmail.com", "gmail.co": "gmail.com", "gamil.com": "gmail.com", "gnail.com": "gmail.com", "gmail.con": "gmail.com",
+      "hotmial.com": "hotmail.com", "hotmai.com": "hotmail.com", "hotmail.co": "hotmail.com", "yaho.com": "yahoo.com", "yahoo.co": "yahoo.com", "outlok.com": "outlook.com", "outlook.co": "outlook.com", "iclod.com": "icloud.com" };
+    const f = fixes[m[1].toLowerCase()]; return f ? e.replace(/@.+$/, "@" + f) : "";
+  }
+
+  ["name", "email", "phone", "industryOther"].forEach((id) => $(id).addEventListener("input", () => validate(false)));
+  $("industry").addEventListener("change", () => { validate(false); haptic(15); if ($("industry").value === "Other") setTimeout(() => $("industryOther").focus(), 50); });
+  $("cc").addEventListener("change", () => validate(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Enter" && !busy) { e.preventDefault(); next(); } });
+
+  // ── choices ──
+  document.querySelectorAll(".choice").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".choice").forEach((x) => x.classList.remove("sel"));
+    b.classList.add("sel"); data.working = b.dataset.val; haptic(20);
+    setTimeout(() => go(cur + 1), 420);
+  }));
+
+  // ── file ──
+  const drop = $("drop");
+  ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", (e) => e.dataTransfer.files[0] && setFile(e.dataTransfer.files[0]));
+  $("file").addEventListener("change", (e) => e.target.files[0] && setFile(e.target.files[0]));
+  $("fileRm").addEventListener("click", () => { data.file = null; $("file").value = ""; $("fileCard").classList.remove("on"); drop.style.display = ""; setHint("fileHint", ""); });
+  function setFile(f) {
+    const ext = (f.name.split(".").pop() || "").toLowerCase();
+    if (!["pdf", "doc", "docx", "jpg", "jpeg", "png", "heic"].includes(ext) && !/^image\//.test(f.type)) { setHint("fileHint", "Please upload a PDF, Word document or photo", "err"); drop.classList.add("shake"); setTimeout(() => drop.classList.remove("shake"), 500); return; }
+    if (f.size > MAX) { setHint("fileHint", `That file is ${(f.size / 1048576).toFixed(1)} MB, max is ${C.MAX_FILE_MB || 8} MB`, "err"); drop.classList.add("shake"); setTimeout(() => drop.classList.remove("shake"), 500); return; }
+    data.file = f; haptic(20);
+    $("fileExt").textContent = ext.toUpperCase().slice(0, 4);
+    $("fileName").textContent = f.name;
+    $("fileSize").textContent = (f.size < 1048576 ? Math.max(1, Math.round(f.size / 1024)) + " KB" : (f.size / 1048576).toFixed(1) + " MB") + " · ready ✓";
+    drop.style.display = "none"; $("fileCard").classList.add("on");
+    setHint("fileHint", "Nice, that'll help a lot.", "ok");
+    $("skip").classList.add("hide");
+  }
+
+  // ── review ──
+  function renderReview() {
+    const rows = [
+      ["Name", data.name.trim(), "name"],
+      ["Email", data.email, "email"],
+      ["Working", data.working === "Yes" ? "Yes, currently employed" : "No, available", "working"],
+      ["Interest", data.industry, "industry"],
+      ["Phone", data.phone.replace(/\D/g, "") ? `${data.cc} ${data.phone}` : "", "phone"],
+      ["CV", data.file ? data.file.name : "", "resume"],
+    ];
+    $("review").innerHTML = rows.map(([k, v, s]) =>
+      `<div class="row"><span>${k}</span><b class="${v ? "" : "none"}">${v ? esc(v) : "Not added"}</b><button type="button" data-go="${s}">Edit</button></div>`).join("");
+    $("review").querySelectorAll("[data-go]").forEach((b) => b.onclick = () => go(order.indexOf(b.dataset.go), -1));
+  }
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // ── buttons ──
+  function next() {
+    const s = name();
+    if (s === "working") return;
+    if (s === "review") return submit();
+    if (!validate(true)) { const f = steps[cur].querySelector(".field") || steps[cur]; f.classList.add("shake", "bad"); haptic(40); setTimeout(() => f.classList.remove("shake", "bad"), 500); return; }
+    if (s === "phone" && !data.phone.replace(/\D/g, "")) data.phone = "";
+    go(cur + 1);
+  }
+  $("next").addEventListener("click", next);
+  $("back").addEventListener("click", () => go(cur - 1));
+  $("skip").addEventListener("click", () => {
+    if (name() === "phone") { $("phone").value = ""; data.phone = ""; setHint("phoneHint", ""); }
+    go(cur + 1);
+  });
+
+  // ── submit ──
+  const toB64 = (f) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = rej; r.readAsDataURL(f); });
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("on"), msg.length > 60 ? 12000 : 4200); }
+
+  // Email delivery via FormSubmit (CV arrives as an attachment).
+  function fields() {
+    const first = data.name.trim();
+    return [
+      ["_subject", `New registration: ${first}${C.EVENT_NAME ? " · " + C.EVENT_NAME : ""}`],
+      ["_template", "table"], ["_captcha", "false"], ["_honey", $("website").value],
+      ["Full name", first],
+      ["email", data.email],
+      ["Currently working", data.working === "Yes" ? "Yes" : "No"],
+      ["Area of interest", data.industry || "Not provided"],
+      ["Phone", data.phone ? `${data.cc} ${data.phone}`.trim() : "Not provided"],
+      ["CV", data.file ? data.file.name + " (attached)" : "Not provided"],
+      ["Source", KIOSK ? "Filled on iPad" : "Scanned QR"],
+      ...(C.EVENT_NAME ? [["Event", C.EVENT_NAME]] : []),
+      ["Submitted", new Date().toLocaleString("en-GB", { timeZone: "Asia/Dubai" }) + " (Dubai)"],
+    ];
+  }
+
+  // 1st choice: FormSubmit's AJAX endpoint. It answers with JSON, so we know
+  // for certain whether it was accepted, and get its exact reason if not.
+  async function sendEmail() {
+    const fd = new FormData();
+    fields().forEach(([k, v]) => fd.append(k, v));
+    if (data.file) fd.append("attachment", data.file, data.file.name);
+    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 90000);
+    let r;
+    try {
+      r = await fetch("https://formsubmit.co/ajax/" + EMAIL, { method: "POST", body: fd, headers: { Accept: "application/json" }, signal: ctrl.signal });
+    } catch (e) {
+      clearTimeout(to);
+      if (navigator.onLine === false) throw e;
+      return sendEmailIframe();            // network/CORS hiccup: fall back to a classic form post
+    }
+    clearTimeout(to);
+    const j = await r.json().catch(() => ({}));
+    if (String(j.success) === "true") return;
+    const err = new Error(j.message || `FormSubmit HTTP ${r.status}`);
+    err.userMsg = j.message || "";
+    throw err;
+  }
+
+  // Fallback: classic multipart post into a hidden iframe; FormSubmit redirects to thanks.html.
+  function sendEmailIframe() {
+    return new Promise((resolve, reject) => {
+      const id = "fs" + Date.now();
+      const ifr = document.createElement("iframe"); ifr.name = id; ifr.style.display = "none"; document.body.appendChild(ifr);
+      const f = document.createElement("form");
+      f.method = "POST"; f.enctype = "multipart/form-data"; f.target = id; f.style.display = "none";
+      f.action = "https://formsubmit.co/" + EMAIL;
+      const add = (n, v) => { const i = document.createElement("input"); i.type = "hidden"; i.name = n; i.value = v; f.appendChild(i); };
+      fields().forEach(([k, v]) => add(k, v));
+      add("_next", new URL("thanks.html", location.href).href);
+      if (data.file) {
+        let fi = document.createElement("input"); fi.type = "file"; fi.name = "attachment";
+        try { const dt = new DataTransfer(); dt.items.add(data.file); fi.files = dt.files; } catch (e) {}
+        if (!fi.files || !fi.files.length) { fi = $("file"); fi.name = "attachment"; }
+        f.appendChild(fi);
+      }
+      document.body.appendChild(f);
+      let done = false;
+      const finish = (ok, why) => { if (done) return; done = true; clearTimeout(t); setTimeout(() => { ifr.remove(); f.remove(); }, 1000); ok ? resolve() : reject(new Error(why)); };
+      const t = setTimeout(() => finish(false, "timeout"), 90000);
+      ifr.addEventListener("load", () => {
+        let href = "";
+        try { href = ifr.contentWindow.location.href; } catch (e) { return finish(false, "FormSubmit did not confirm (check the activation email)"); }
+        if (href === "about:blank") return;
+        finish(/\/thanks(\.html)?(\?|#|$)/.test(href), "unexpected-page");
+      });
+      f.submit();
+    });
+  }
+
+  async function submit() {
+    if (busy) return; busy = true;
+    const btn = $("next"), lbl = $("nextLabel"), fill = $("btnFill");
+    const arrow = btn.querySelector("svg"); arrow.style.display = "none";
+    lbl.innerHTML = '<span class="spin"></span>'; btn.disabled = true; $("back").disabled = true;
+    let p = 0; const tick = setInterval(() => { p += (92 - p) * 0.08; fill.style.width = p + "%"; }, 120);
+    try {
+      if (DEMO) await new Promise((r) => setTimeout(r, 1400));
+      else if (C.ENDPOINT) {
+        const payload = {
+          name: data.name.trim(), email: data.email, working: data.working, industry: data.industry,
+          phone: data.phone ? `${data.cc} ${data.phone}`.trim() : "",
+          event: C.EVENT_NAME || "", source: KIOSK ? "ipad" : "qr",
+          website: $("website").value,
+          resume: data.file ? { name: data.file.name, type: data.file.type || "application/octet-stream", data: await toB64(data.file) } : null,
+        };
+        const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 60000);
+        const r = await fetch(C.ENDPOINT, { method: "POST", body: JSON.stringify(payload), signal: ctrl.signal });
+        clearTimeout(to);
+        const j = await r.json().catch(() => ({}));
+        if (!j.ok) throw new Error(j.error || "Server error");
+      } else await sendEmail();
+      clearInterval(tick); fill.style.width = "100%";
+      setTimeout(success, 250);
+    } catch (err) {
+      clearInterval(tick); fill.style.width = "0";
+      lbl.textContent = "Try again"; arrow.style.display = ""; btn.disabled = false; $("back").disabled = false; busy = false;
+      toast(navigator.onLine === false ? "You're offline. Check your connection and try again."
+        : err && err.userMsg ? err.userMsg : "Couldn't send. Please try again." + (err && err.message ? " (" + err.message + ")" : ""));
+      console.error(err);
+    }
+  }
+
+  function success() {
+    $("doneTitle").textContent = first() ? `You're in, ${first()}!` : "You're in!";
+    $("doneSub").innerHTML = `Thanks for registering. Our recruiters will reach out at <b style="color:var(--b1)">${esc(data.email)}</b>.`;
+    go(order.indexOf("done")); haptic([30, 50, 30]);
+    if (KIOSK) countdown(8);
+  }
+
+  function countdown(n) {
+    $("ring").hidden = false; const c = $("ringC"), total = n;
+    const t = setInterval(() => {
+      n--; c.style.strokeDashoffset = (94.25 * (1 - n / total)).toFixed(2); $("ringT").textContent = `Restarting in ${n}s`;
+      if (n <= 0) { clearInterval(t); location.href = "kiosk.html"; }
+    }, 1000);
+  }
+
+  // kiosk mode: return to QR screen after 90s idle
+  if (KIOSK) {
+    let idle; const reset = () => { clearTimeout(idle); idle = setTimeout(() => location.href = "kiosk.html", 90000); };
+    ["pointerdown", "keydown", "input"].forEach((e) => document.addEventListener(e, reset)); reset();
+  }
+
+  // ── confetti ──
+  function confetti() {
+    const cv = $("confetti"), ctx = cv.getContext("2d"), dpr = devicePixelRatio || 1;
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+    const cols = ["#FC7224", "#FD9438", "#FEB46B", "#FDDBC0", "#4C1F02", "#ffffff"];
+    const P = Array.from({ length: 160 }, () => ({
+      x: innerWidth / 2, y: innerHeight * 0.38, vx: (Math.random() - 0.5) * 16, vy: Math.random() * -15 - 4,
+      s: Math.random() * 7 + 4, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, c: cols[(Math.random() * cols.length) | 0], sh: Math.random() > 0.5,
+    }));
+    let f = 0;
+    (function loop() {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      P.forEach((p) => { p.vy += 0.38; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c;
+        if (p.sh) ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); else { ctx.beginPath(); ctx.arc(0, 0, p.s / 2.4, 0, 7); ctx.fill(); }
+        ctx.restore(); });
+      if (++f < 220) requestAnimationFrame(loop); else ctx.clearRect(0, 0, innerWidth, innerHeight);
+    })();
+  }
+
+  onEnter();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HIRS Kiosk">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#FFFCF8">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Scan to Join · HIRS × HiresGulf × Tawdheef</title>
+<link rel="stylesheet" href="assets/fonts/poppins.css">
+<script src="config.js"></script>
+<script src="assets/brand.js"></script>
+<script src="assets/qr-code-styling.js"></script>
+<style>
+/*
+  iPad kiosk: laid out on a fixed design canvas (1024 wide upright,
+  1366 wide sideways) and scaled to fit, so every iPad looks identical.
+*/
+:root{--o:#FC7224;--ink:#2B2B2B;--muted:#8A8078;--hair:#EDE3D9;--line:#FFC59A;--ease:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
+html,body{margin:0;height:100%;overflow:hidden;position:fixed;inset:0;overscroll-behavior:none;touch-action:none;
+  font-family:Poppins,-apple-system,system-ui,sans-serif;color:var(--ink);-webkit-text-size-adjust:100%;
+  background:linear-gradient(180deg,#FFFDFB 0%,#FFF8F1 100%)}
+a,button{touch-action:manipulation}
+
+#canvas{position:fixed;left:0;top:0;transform-origin:0 0;display:flex;flex-direction:column}
+.main{flex:1;min-height:0;display:flex;align-items:center;justify-content:space-evenly;text-align:center}
+.colA,.colB{display:flex;flex-direction:column;align-items:center}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.ready .reveal{opacity:1;transform:none}
+.ready .d1{transition-delay:.08s}.ready .d2{transition-delay:.16s}.ready .d3{transition-delay:.24s}.ready .d4{transition-delay:.32s}
+
+/* logos */
+.logos{display:flex;align-items:center;justify-content:center;gap:34px}
+.logos img{display:block;width:auto;object-fit:contain}
+.logos .l-hirs{height:92px}
+.logos .l-hg{height:50px}
+.logos .l-tw{height:84px}
+.logos .sep{width:1px;height:56px;background:var(--hair)}
+.wm{font-weight:600;font-size:30px}
+
+/* title */
+h1{margin:0;font-weight:500;font-size:46px;line-height:1.4;letter-spacing:.18em;text-transform:uppercase;color:#333}
+h1 .o{color:var(--o);font-weight:600}
+.lead{margin:14px 0 0;font-size:22px;line-height:1.5;color:var(--muted)}
+
+/* QR */
+.qrcard{--s:540px;position:relative;padding:28px;border-radius:36px;background:#fff;border:1px solid var(--hair);
+  box-shadow:0 30px 60px -36px rgba(120,70,30,.35);transition:transform .4s var(--ease)}
+.qrcard:active{transform:scale(.985)}
+.qrcard::after{content:"";position:absolute;inset:-1px;border-radius:36px;border:1.5px solid var(--o);opacity:0;animation:halo 5s ease-in-out infinite;pointer-events:none}
+@keyframes halo{0%,60%,100%{opacity:0;transform:scale(1)}75%{opacity:.5;transform:scale(1.025)}90%{opacity:0;transform:scale(1.05)}}
+#qr{width:var(--s);height:var(--s)}
+#qr canvas{width:100%!important;height:100%!important;display:block}
+
+.scanhint{display:flex;flex-direction:column;align-items:center;gap:6px}
+.hint{font-size:24px;font-weight:500;white-space:nowrap}
+.url{font-size:18px;color:var(--muted)}
+.url b{color:var(--ink);font-weight:500}
+
+/* divider + 3 steps (brand sheet style) */
+.rule{width:820px;height:1px;background:var(--line)}
+.items{display:flex;justify-content:space-between;width:820px}
+.it{display:flex;align-items:center;gap:14px;text-align:left}
+.it .ic{flex:0 0 52px;width:52px;height:52px;border-radius:50%;border:1.5px solid var(--o);display:grid;place-items:center;color:var(--o);font-weight:600;font-size:20px;
+  transition:background .6s var(--ease),color .6s var(--ease)}
+.it .tx{font-size:21px;line-height:1.3;position:relative;padding-bottom:8px}
+.it .tx::after{content:"";position:absolute;left:0;bottom:0;width:40px;height:1.5px;background:var(--o);transition:width .8s var(--ease)}
+.it.on .ic{background:var(--o);color:#fff}
+.it.on .tx::after{width:100%}
+
+/* footer actions */
+.actions{display:flex;align-items:center;justify-content:center;gap:28px}
+.fillhere{display:inline-flex;align-items:center;height:60px;padding:0 30px;border-radius:99px;font:inherit;font-size:19px;font-weight:500;
+  color:var(--ink);background:#fff;border:1px solid var(--hair);text-decoration:none;transition:transform .25s var(--ease),border-color .25s}
+.fillhere:active{transform:scale(.96);border-color:var(--o)}
+.fillhere span{color:var(--o);margin-left:10px;font-size:22px;line-height:1}
+
+footer{flex:0 0 auto;height:84px;background:#fff;border-top:1px solid var(--hair);display:flex;justify-content:center;align-items:center;gap:32px;font-size:22px;color:#222}
+footer i{width:1px;height:36px;background:#d8d8d8}
+
+/* PORTRAIT (1024 × ≥1366) */
+.portrait .main{flex-direction:column;padding:60px 80px 36px}
+.portrait .colA,.portrait .colB{display:contents}
+.portrait .logos{order:1}.portrait .title{order:2}.portrait .qrcard{order:3}.portrait .scanhint{order:4}
+.portrait .rule{order:5}.portrait .items{order:6}.portrait .actions{order:7}
+
+/* LANDSCAPE (1366 × ≥900) */
+.landscape .main{flex-direction:row;justify-content:center;gap:90px;padding:24px 60px}
+.landscape .colA{gap:30px}
+.landscape .qrcard{--s:500px}
+.landscape .colB{width:600px;align-items:flex-start;text-align:left;gap:30px}
+.landscape .logos{gap:20px}
+.landscape .logos .l-hirs{height:62px}.landscape .logos .l-hg{height:32px}.landscape .logos .l-tw{height:56px}.landscape .logos .sep{height:40px}
+.landscape h1{font-size:40px}
+.landscape .lead{font-size:20px;margin-top:10px}
+.landscape .rule,.landscape .items{width:100%}
+.landscape .items{flex-direction:column;align-items:flex-start;gap:18px}
+.landscape .actions{justify-content:flex-start;gap:24px}
+.landscape footer{height:72px;font-size:20px}
+
+/* staff panel: press and hold the footer for 2 s */
+.staff{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:rgba(30,20,10,.45)}
+.staff.on{display:grid}
+.staff .box{width:min(520px,90vw);background:#fff;border-radius:24px;padding:28px;font-size:16px}
+.staff h3{margin:0 0 4px;font-size:20px;font-weight:600}
+.staff p{margin:0 0 18px;color:var(--muted);word-break:break-all;font-size:13px;-webkit-user-select:text;user-select:text}
+.staff .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.staff button{height:54px;border-radius:14px;border:1px solid var(--hair);background:#fff;font:inherit;font-weight:500;color:var(--ink)}
+.staff button.pri{background:var(--o);color:#fff;border:0}
+.staff .stat{margin-top:14px;font-size:13px;color:var(--muted)}
+.lp{position:fixed;left:0;bottom:0;height:3px;background:var(--o);width:0;z-index:60;transition:width 2s linear}
+.lp.go{width:100%}
+
+.demo{position:fixed;top:calc(12px + env(safe-area-inset-top));left:12px;z-index:9;font-size:10px;font-weight:600;letter-spacing:.1em;padding:4px 8px;border-radius:6px;border:1px solid var(--hair);background:#fff;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="canvas">
+  <div class="main">
+    <div class="colA">
+      <div class="qrcard reveal d2" id="card"><div id="qr"></div></div>
+      <div class="scanhint reveal d3">
+        <div class="hint">Point your phone camera at the code</div>
+        <div class="url">or visit <b id="url">…</b></div>
+      </div>
+    </div>
+
+    <div class="colB">
+      <div class="logos reveal">
+        <img class="l-hirs" src="assets/logo-hirs.png" alt="HIRS" data-wm="hirs" onerror="logoFallback(this)">
+        <span class="sep"></span>
+        <img class="l-hg" src="assets/logo-hiresgulf.png" alt="HiresGulf" data-wm="hg" onerror="logoFallback(this)">
+        <span class="sep"></span>
+        <img class="l-tw" src="assets/logo-tawdeef.png" alt="Zaheb × Tawdheef" data-wm="tw" onerror="logoFallback(this)">
+      </div>
+      <div class="title reveal d1">
+        <h1>Scan to join our<br><span class="o">talent network</span></h1>
+        <p class="lead">Share your details in under a minute.</p>
+      </div>
+      <div class="rule reveal d3"></div>
+      <div class="items reveal d4">
+        <div class="it on"><span class="ic">1</span><span class="tx">Scan the code</span></div>
+        <div class="it"><span class="ic">2</span><span class="tx">Share your details</span></div>
+        <div class="it"><span class="ic">3</span><span class="tx">We'll be in touch</span></div>
+      </div>
+      <div class="actions reveal d4">
+        <a class="fillhere" href="index.html#kiosk">No phone? Fill it in here<span>→</span></a>
+      </div>
+    </div>
+  </div>
+  <footer id="footer"><span>www.horizonirs.ae</span><i></i><span>www.hiresgulf.com</span></footer>
+</div>
+
+<div class="lp" id="lp"></div>
+<div class="staff" id="staff">
+  <div class="box">
+    <h3>Staff panel</h3>
+    <p id="staffUrl"></p>
+    <div class="grid">
+      <button class="pri" id="sReload">Reload page</button>
+      <button id="sFull">Full screen</button>
+      <button id="sForm">Open form here</button>
+      <button id="sClose">Close</button>
+    </div>
+    <div class="stat" id="sStat"></div>
+  </div>
+</div>
+
+<script>
+(async () => {
+  const C = window.EVENT_CONFIG || {};
+  const $ = (id) => document.getElementById(id);
+  const DEMO = !C.ENDPOINT && !(C.EMAIL_TO || "").trim();
+  if (DEMO) { const d = document.createElement("div"); d.className = "demo"; d.textContent = "DEMO MODE"; document.body.appendChild(d); }
+
+  // fit the design canvas to the screen
+  const cnv = $("canvas");
+  function fit() {
+    const W = innerWidth, H = innerHeight, land = W > H;
+    const dw = land ? 1366 : 1024, dh = land ? 900 : 1366;
+    const s = Math.min(W / dw, H / dh);
+    cnv.classList.remove("portrait", "landscape"); cnv.classList.add(land ? "landscape" : "portrait");
+    cnv.style.width = W / s + "px"; cnv.style.height = H / s + "px"; cnv.style.transform = `scale(${s})`;
+  }
+  fit(); addEventListener("resize", fit); addEventListener("orientationchange", () => setTimeout(fit, 250));
+  requestAnimationFrame(() => cnv.classList.add("ready"));
+
+  // kiosk hardening: no zoom, no rubber-band, no callouts
+  ["gesturestart", "gesturechange", "gestureend"].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault(), { passive: false }));
+  document.addEventListener("touchmove", (e) => { if (!e.target.closest(".staff .box")) e.preventDefault(); }, { passive: false });
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+  let lastTouch = 0;
+  document.addEventListener("touchend", (e) => { const n = Date.now(); if (n - lastTouch < 300 && !e.target.closest("a,button")) e.preventDefault(); lastTouch = n; }, { passive: false });
+
+  // QR
+  const url = formUrl();
+  $("url").textContent = url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  $("staffUrl").textContent = "QR points to: " + url;
+  const img = await resolveQrCenter();
+  new QRCodeStyling({
+    width: 1200, height: 1200, type: "canvas", data: url, image: img, margin: 0,
+    qrOptions: { errorCorrectionLevel: "H" },
+    dotsOptions: { type: "rounded", color: "#2B2B2B" },
+    cornersSquareOptions: { type: "extra-rounded", color: "#2B2B2B" },
+    cornersDotOptions: { type: "dot", color: "#FC7224" },
+    backgroundOptions: { color: "#ffffff" },
+    imageOptions: { imageSize: 0.36, margin: 14, hideBackgroundDots: true },
+  }).append($("qr"));
+
+  // step highlight
+  const its = [...document.querySelectorAll(".it")]; let si = 0;
+  setInterval(() => { its[si].classList.remove("on"); si = (si + 1) % its.length; its[si].classList.add("on"); }, 3000);
+
+  // staff status line
+  function status() {
+    $("sStat").textContent = (DEMO ? "Demo mode: nothing is saved. " : C.ENDPOINT ? "Registrations go to the Google Sheet. " : "Registrations are emailed to " + C.EMAIL_TO + ". ")
+      + (navigator.onLine === false ? "iPad is OFFLINE" : "iPad is online");
+  }
+
+  // keep awake, fullscreen on first touch, refresh every 30 min
+  let lock = null, fsTried = false;
+  async function keepAwake() {
+    try { if ("wakeLock" in navigator && !lock && document.visibilityState === "visible") { lock = await navigator.wakeLock.request("screen").catch(() => null); if (lock) lock.addEventListener("release", () => (lock = null)); } } catch (e) {}
+    if (!fsTried && navigator.userActivation && navigator.userActivation.isActive) { fsTried = true; goFull(); }
+  }
+  function goFull() { const d = document.documentElement; try { const f = d.requestFullscreen || d.webkitRequestFullscreen; const r = f && f.call(d); r && r.catch && r.catch(() => {}); } catch (e) {} }
+  document.addEventListener("pointerdown", keepAwake);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { keepAwake(); } });
+  keepAwake();
+  setTimeout(() => location.reload(), 30 * 60 * 1000);
+
+  // staff panel
+  let lpT; const lp = $("lp");
+  $("footer").addEventListener("pointerdown", () => { lp.classList.add("go"); lpT = setTimeout(() => { $("staff").classList.add("on"); status(); lp.classList.remove("go"); }, 2000); });
+  ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => $("footer").addEventListener(ev, () => { clearTimeout(lpT); lp.classList.remove("go"); }));
+  $("sReload").onclick = () => location.reload();
+  $("sFull").onclick = () => { goFull(); $("staff").classList.remove("on"); };
+  $("sForm").onclick = () => (location.href = "index.html#kiosk");
+  $("sClose").onclick = () => $("staff").classList.remove("on");
+})();
+</script>
+</body>
+</html>

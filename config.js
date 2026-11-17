@@ -11,6 +11,10 @@ window.EVENT_CONFIG = {
   // The first submission sends an "Activate" email to this inbox: click it once.
   EMAIL_TO: "zainfarrukh01@gmail.com",
 
+  // Backup inbox: used automatically when EMAIL_TO is rate-limited by FormSubmit.
+  // (needs its own one-time FormSubmit activation click)
+  BACKUP_EMAIL_TO: "horizon.itdep@gmail.com",
+
   // OPTIONAL: Google Apps Script URL (see README). If set, this is used
   // instead of email: rows go to a Google Sheet and CVs to Google Drive.
   ENDPOINT: "",

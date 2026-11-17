@@ -559,22 +559,35 @@ canvas#confetti{position:fixed;inset:0;z-index:30;pointer-events:none;width:100%
     ];
   }
 
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const isRateLimit = (r, j) => r.status === 429 || /rate.?limit|too many/i.test((j && j.message) || "");
+
   async function sendEmail() {
-    const fd = new FormData();
-    fields(data.file ? `${data.file.name} (attached to a separate email "CV: ${data.name.trim()}")` : "Not provided").forEach(([k, v]) => fd.append(k, v));
-    const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 60000);
-    let r;
-    try {
-      r = await fetch("https://formsubmit.co/ajax/" + EMAIL, { method: "POST", body: fd, headers: { Accept: "application/json" }, signal: ctrl.signal });
-    } catch (e) {
+    const note = data.file ? `${data.file.name} (attached to a separate email "CV: ${data.name.trim()}")` : "Not provided";
+    // Automatic retry with back-off when FormSubmit is busy (rate limit) — the candidate does nothing.
+    const waits = [4000, 8000, 12000, 18000, 25000, 30000];   // ~1.5 min in total
+    for (let attempt = 0; ; attempt++) {
+      const fd = new FormData();
+      fields(note).forEach(([k, v]) => fd.append(k, v));
+      const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 60000);
+      let r;
+      try {
+        r = await fetch("https://formsubmit.co/ajax/" + EMAIL, { method: "POST", body: fd, headers: { Accept: "application/json" }, signal: ctrl.signal });
+      } catch (e) {
+        clearTimeout(to);
+        if (navigator.onLine === false) throw e;
+        return postForm(fields(data.file ? data.file.name + " (attached)" : "Not provided"), true, true);
+      }
       clearTimeout(to);
-      if (navigator.onLine === false) throw e;
-      // AJAX unreachable: send everything (incl. CV) as one classic post instead
-      return postForm(fields(data.file ? data.file.name + " (attached)" : "Not provided"), true, true);
+      const j = await r.json().catch(() => ({}));
+      if (String(j.success) === "true") break;
+      if (isRateLimit(r, j) && attempt < waits.length) {
+        $("nextLabel").innerHTML = '<span class="spin"></span>&nbsp; Busy, sending…';
+        await sleep(waits[attempt] + Math.random() * 2000);
+        continue;
+      }
+      const err = new Error(j.message || `FormSubmit HTTP ${r.status}`); err.userMsg = j.message || ""; throw err;
     }
-    clearTimeout(to);
-    const j = await r.json().catch(() => ({}));
-    if (String(j.success) !== "true") { const err = new Error(j.message || `FormSubmit HTTP ${r.status}`); err.userMsg = j.message || ""; throw err; }
     if (data.file) await postForm(cvFields(), true, false);   // wait until the upload has finished
   }
 

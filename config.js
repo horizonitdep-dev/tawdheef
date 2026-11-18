@@ -15,14 +15,16 @@ window.EVENT_CONFIG = {
   // (needs its own one-time FormSubmit activation click)
   BACKUP_EMAIL_TO: "horizon.itdep@gmail.com",
 
-  // OPTIONAL: Google Apps Script URL (see README). If set, this is used
-  // instead of email: rows go to a Google Sheet and CVs to Google Drive.
-  ENDPOINT: "",
+  // PRIMARY: Google Apps Script Web App (owned by horizon.itdep@gmail.com).
+  // Each registration -> row in the "Event Registrations" Google Sheet,
+  // each CV -> file in Drive folder "Event CVs - HIRS x HiresGulf x Tawdheef".
+  // The email settings above are only used as a fallback if Google is unreachable.
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbyWBmQxatWvavES6f-7dbk5jPv4AxnqOYk-OMb9IMTsNBbO4TMHU7Xp5xXMNUCUX4peJw/exec",
 
   // Shown on the kiosk + saved with every submission
   EVENT_NAME: "Career Fair 2026",
 
   // Max resume size in MB
-  MAX_FILE_MB: 8,
+  MAX_FILE_MB: 10,
 
 };
